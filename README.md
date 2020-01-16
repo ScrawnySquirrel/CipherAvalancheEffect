@@ -9,10 +9,11 @@ These instructions will help generate ciphertext in hex using AES-128 cipher and
 ## Prerequisite
 
 * Python2
+* Openssl
 
 ## Calculate the Avalanche effect via XOR comparison
 
-The main script that will perform the XOR comparison of the provided ciphertext (hex), is `avalancheeffect.py`. This can be done in 2 ways using: command line arguments or input files.
+The main script that will perform the XOR comparison of the provided ciphertext (hex) is `avalancheeffect.py`. This can be done in 2 ways using: command line arguments or input files.
 
 > You can create a CSV file with the relevant data by passing the `-o <csv_filename>` argument.
 > The CSV file can be used to extract data easily.
@@ -32,18 +33,18 @@ To use the input files, the file just contain more than one hex values separated
 The script with take the first line hex as the base and the rest as the updated hex values.
 
 ```
-python avalancheeffect.py -i ptupdated -o whatever.csv
+python avalancheeffect.py -i /test_data/pthash -o pt_avalanche.csv
 ```
 
 ## Running the tests
 
-All the test data and results are provided in the `Test Data` folder.
+All the test data and results are provided in the `test_data` folder.
 
 If you wish to use other test data and generate a new result, you can use the `generate_avalanche_result.sh`.
 
 ### Generate the AES-128 ciphertext in hex and calculate the Avalanche effect
 
-`generate_avalanche_result.sh` will consume the `plaintext_list` and `key_list` to output a file with the AES-128 ciphertext in hex.
+`generate_avalanche_result.sh` will consume the `plaintext_list` and `key_list` to output a file with the AES-128 ciphertext in hex as pthash and khash respectively.
 
 Afterwards, it will execute the `avalancheeffect.py` script to generate the CSV for the Avalanche effect data.
 
