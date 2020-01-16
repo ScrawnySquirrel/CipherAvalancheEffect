@@ -13,21 +13,35 @@ args = parser.parse_args()
 if args.input is not None:
     with open(args.input) as f:
         content = f.readlines()
-    uhashlist = [x.strip() for x in content]
+    updated_hex_list = [x.strip() for x in content]
     # Pop base ciphertext from file and convert base hex to binary without the integer literals
-    bhash = bin(int(uhashlist.pop(0), 16))[2:]
+    base_hex = updated_hex_list.pop(0)
+    base_binary = bin(int(base_hex, 16))[2:]
 else:
     # Convert base hex to binary without the integer literals
-    bhash = bin(int(args.base, 16))[2:]
-    uhashlist = args.updated
+    base_binary = bin(int(args.base, 16))[2:]
+    updated_hex_list = args.updated
 
-for updatedhash in uhashlist:
+bin_len = len(base_binary)
+
+if args.output is not None:
+    f = open(args.output, "w")
+    f.write("base_hex,base_binary,updated_hex,updated_binary,xor_binary,changed_bit_count,length,percentage\n")
+
+for updated_hex in updated_hex_list:
     # Convert updated hex to binary without the integer literals
-    uhash = bin(int(updatedhash, 16))[2:]
+    updated_binary = bin(int(updated_hex, 16))[2:]
 
     # Perform XOR comparison on binary values and output to screen
-    print('{0:0{1}b}'.format(int(bhash,2) ^ int(uhash, 2), len(bhash)))
+    xor_binary = '{0:0{1}b}'.format(int(base_binary,2) ^ int(updated_binary, 2), len(base_binary))
+    print(xor_binary)
+    changed_bit_count = xor_binary.count("1")
 
     # Print how many bits have been changed compared to the base
-    xorres = '{0:0{1}b}'.format(int(bhash,2) ^ int(uhash, 2), len(bhash))
-    print("Bits changed: {} out of {}".format(xorres.count("1"), len(bhash)))
+    print("Bits changed: {} out of {}".format(changed_bit_count, len(base_binary)))
+
+    if args.output is not None:
+        f.write("{},{},{},{},{},{},{},{:.2f}%\n".format(base_hex, base_binary, updated_hex, updated_binary, xor_binary, changed_bit_count, bin_len, float(changed_bit_count) / float(bin_len) * 100))
+
+if args.output is not None:
+    f.close()
