@@ -22,26 +22,31 @@ else:
     base_binary = bin(int(args.base, 16))[2:]
     updated_hex_list = args.updated
 
-bin_len = len(base_binary)
-
+# Create and open CSV file for writing
 if args.output is not None:
     f = open(args.output, "w")
-    f.write("base_hex,base_binary,updated_hex,updated_binary,xor_binary,changed_bit_count,length,percentage\n")
+    f.write("round,base_hex,base_binary,updated_hex,updated_binary,xor_binary,changed_bit_count,length,percentage\n")
+
+bin_len = len(base_binary)
+round_count = 1
 
 for updated_hex in updated_hex_list:
+    print("Round: {}".format(round_count))
     # Convert updated hex to binary without the integer literals
     updated_binary = bin(int(updated_hex, 16))[2:]
 
     # Perform XOR comparison on binary values and output to screen
     xor_binary = '{0:0{1}b}'.format(int(base_binary,2) ^ int(updated_binary, 2), len(base_binary))
-    print(xor_binary)
+    print("XOR Result: {}".format(xor_binary))
     changed_bit_count = xor_binary.count("1")
 
     # Print how many bits have been changed compared to the base
     print("Bits changed: {} out of {}".format(changed_bit_count, len(base_binary)))
 
+    # Output to CSV file if specified
     if args.output is not None:
-        f.write("{},{},{},{},{},{},{},{:.2f}%\n".format(base_hex, base_binary, updated_hex, updated_binary, xor_binary, changed_bit_count, bin_len, float(changed_bit_count) / float(bin_len) * 100))
+        f.write("{},{},{},{},{},{},{},{},{:.2f}%\n".format(round_count, base_hex, base_binary, updated_hex, updated_binary, xor_binary, changed_bit_count, bin_len, float(changed_bit_count) / float(bin_len) * 100))
+    round_count += 1
 
 if args.output is not None:
     f.close()
