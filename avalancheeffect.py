@@ -19,6 +19,7 @@ if args.input is not None:
     base_binary = bin(int(base_hex, 16))[2:]
 else:
     # Convert base hex to binary without the integer literals
+    base_hex = args.base
     base_binary = bin(int(args.base, 16))[2:]
     updated_hex_list = args.updated
 
